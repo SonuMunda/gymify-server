@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js"
   },
   "keywords": [],
@@ -38,6 +38,6 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.22"
   }
 }

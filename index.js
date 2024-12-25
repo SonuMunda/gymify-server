@@ -8,6 +8,7 @@ import app from "./app.js";
 dotenv.config();
 
 const CONNECTION_URL = process.env.CONNECTION_URL;
+
 const PORT = process.env.PORT || 3000;
 
 // Exit on error

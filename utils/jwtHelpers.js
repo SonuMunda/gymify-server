@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const sign = async (payload, secret) => {
   return new Promise((resolve, reject) => {
