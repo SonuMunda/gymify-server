@@ -6,9 +6,7 @@ import { verify } from "../utils/jwtHelpers.js";
 
 const isActiveUser = async (req, res, next) => {
   try {
-    // Extract the Authorization header
     const authorizationHeader = req.get("Authorization");
-    console.log(authorizationHeader);
 
     if (!authorizationHeader) {
       throw new APIError(
@@ -26,7 +24,7 @@ const isActiveUser = async (req, res, next) => {
       );
     }
     let tokenPayload = await verify(accessToken, process.env.JWT_SECRET);
-    console.log(tokenPayload);
+
     if (!tokenPayload || tokenPayload.type !== tokenTypes.ACCESS)
       throw new APIError(httpStatus.UNAUTHORIZED, "Invalid Access Token");
 

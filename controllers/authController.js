@@ -54,7 +54,7 @@ const logout = async (req, res, next) => {
 const refreshToken = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
-    console.log("refreshToken", refreshToken);
+
     let refreshTokenPayload = await verifyRefreshToken(refreshToken);
     console.log();
     await verifyUserFromRefreshTokenPayload(refreshTokenPayload);
@@ -71,8 +71,6 @@ const refreshToken = async (req, res, next) => {
 };
 
 const resetPassword = async (req, res, next) => {
-  console.log("resetPassword", req.authData.userId);
-  console.log("resetPassword", req.body.password);
   try {
     await verifyCurrentPassword(req.authData.userId, req.body.password);
     await updatePassword(req.authData.userId, req.body.newPassword);
@@ -94,11 +92,14 @@ const googleUserRegister = async (req, res, next) => {
       idToken: token,
       audience: process.env.CLIENT_ID,
     });
+    console.log("ticket", ticket);
     const { name, email, picture } = ticket.getPayload();
+
     const newUser = await createNewUser({
       email: email,
-      name: name,
-      image: picture,
+      fullName: name,
+      avatar: picture,
+      verfied: true,
       source: "google",
     });
     const tokens = await generateAuthTokens(newUser);
