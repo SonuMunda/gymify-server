@@ -40,11 +40,11 @@ router.get("/info", trimRequest.all, isActiveUser, controller.getUserInfo);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               fullName:
  *                 type: string
- *               email:
+ *               about:
  *                 type: string
- *               phone:
+ *               username:
  *                 type: string
  *             required:
  *               - name
