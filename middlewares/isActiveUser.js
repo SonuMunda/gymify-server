@@ -7,7 +7,7 @@ import { verify } from "../utils/jwtHelpers.js";
 const isActiveUser = async (req, res, next) => {
   try {
     const authorizationHeader = req.get("Authorization");
-
+    console.log("authorizationHeader", authorizationHeader);
     if (!authorizationHeader) {
       throw new APIError(
         httpStatus.UNAUTHORIZED,
@@ -16,7 +16,7 @@ const isActiveUser = async (req, res, next) => {
     }
 
     const [bearer, accessToken] = authorizationHeader.split(" ");
-
+    console.log(bearer, accessToken);
     if (bearer !== "Bearer" || !accessToken) {
       throw new APIError(
         httpStatus.UNAUTHORIZED,
@@ -24,6 +24,7 @@ const isActiveUser = async (req, res, next) => {
       );
     }
     let tokenPayload = await verify(accessToken, process.env.JWT_SECRET);
+    console.log("tokenPayload", tokenPayload);
 
     if (!tokenPayload || tokenPayload.type !== tokenTypes.ACCESS)
       throw new APIError(httpStatus.UNAUTHORIZED, "Invalid Access Token");
@@ -32,8 +33,11 @@ const isActiveUser = async (req, res, next) => {
       _id: tokenPayload.userId,
     });
 
-    if (!userExists)
+    console.log("userExists", JSON.stringify(userExists, null, 2));
+    if (!userExists) {
+      console.log("andr hu");
       throw new APIError(httpStatus.FORBIDDEN, "Invalid Access Token - logout");
+    }
 
     let refreshTokenExists = await RefreshTokenModel.exists({
       userRef: tokenPayload.userId,
