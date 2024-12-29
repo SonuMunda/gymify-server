@@ -1,3 +1,4 @@
+import { ChallengeModel } from "../models/index.js";
 import { getUserFromId, getUserFromUsername } from "../services/userService.js";
 
 /**
@@ -148,9 +149,78 @@ const updateAvatar = async (req, res, next) => {
   }
 };
 
+/**
+ * @swagger
+ * /v1/user/create-challenge:
+ *  post:
+ *  description: Create a new challenge
+ * tags:
+ * - User
+ * security:
+ * - bearerAuth: []
+ * requestBody:
+ * required: true
+ * content:
+ * application/json:
+ * schema:
+ * type: object
+ * properties:
+ * challengeName:
+ * type: string
+ * challengeType:
+ * type: string
+ * exerciseType:
+ * type: string
+ * challengerId:
+ * type: string
+ * challengedUserId:
+ * type: string
+ * required:
+ * - challengeName
+ * - challengeType
+ * - exerciseType
+ * - challengerId
+ * - challengedUserId
+ * responses:
+ * 200:
+ * description: Challenge created successfully
+ * 400:
+ * description: Error
+ * 401:
+ * description: Unauthorized
+ */
+
+const createChallenge = async (req, res, next) => {
+  const userId = req.authData.userId;
+  const {
+    challengeName,
+    challengeType,
+    exerciseType,
+    challengerId,
+    challengedUserId,
+  } = req.body;
+  try {
+    const user = await getUserFromId(userId);
+    const challenge = new ChallengeModel({
+      challengeName,
+      challengeType,
+      exerciseType,
+      challengerId,
+      challengedUserId,
+    });
+    await challenge.save();
+    res.status(200).json({ challenge });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getUserInfo,
   updateUser,
   checkUsername,
   updateAvatar,
+  createChallenge,
 };
+
+

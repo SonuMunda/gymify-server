@@ -61,6 +61,6 @@ const ChallengeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Challenge = mongoose.model("ChallengeModel", ChallengeSchema);
+const ChallengeModel = mongoose.model("ChallengeModel", ChallengeSchema);
 
-module.exports = ChallengeModel;
+export default ChallengeModel;

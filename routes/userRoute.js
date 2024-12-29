@@ -135,4 +135,55 @@ router.put(
   controller.updateAvatar
 );
 
+/**
+ * @swagger
+ * /v1/user/create-challenge:
+ *  post:
+ *  description: Create a new challenge
+ *  tags:
+ *   - User
+ * security:
+ *  - BearerAuth: []
+ * requestBody:
+ * required: true
+ * content:
+ * application/json:
+ * schema:
+ * type: object
+ * properties:
+ * challengeName:
+ * type: string
+ * challengeType:
+ * type: string
+ * exerciseType:
+ * type: string
+ * challengerUserId:
+ * type: string
+ * challengedUserId:
+ * type: string
+ * required:
+ * - challengeName
+ * - challengeType
+ * - exerciseType
+ * - challengerUserId
+ * - challengedUserId
+ * responses:
+ * 200:
+ * 
+ * description: Challenge created successfully
+ * 400:
+ * description: Invalid challenge data
+ * 401:
+ * description: Unauthorized, user not logged in
+ */
+
+router.post(
+  "/create-challenge",
+  trimRequest.all,
+  isActiveUser,
+  validate(schemas.createChallengeSchema),
+  controller.createChallenge
+);
+
+
 export default router;

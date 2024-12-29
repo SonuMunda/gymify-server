@@ -1,7 +1,5 @@
-import UserModel from './UserModel.js';
-import RefreshTokenModel from './RefreshTokenModel.js';
-import ChallengeModel from './ChallengeModel.js';
+import UserModel from "./UserModel.js";
+import ChallengeModel from "./ChallengeModel.js";
+import RefreshTokenModel from "./RefreshTokenModel.js";
 
-export {
-  UserModel,RefreshTokenModel, ChallengeModel
-};
+export default { UserModel, RefreshTokenModel, ChallengeModel };
