@@ -42,9 +42,15 @@ router.get("/info", trimRequest.all, isActiveUser, controller.getUserInfo);
  *             properties:
  *               fullName:
  *                 type: string
+<<<<<<< HEAD
  *               about:
  *                 type: string
  *               username:
+=======
+ *               username:
+ *                 type: string
+ *               about:
+>>>>>>> 9c1f77543348d6846f945cb17dda0ef97b4a0173
  *                 type: string
  *             required:
  *               - name
