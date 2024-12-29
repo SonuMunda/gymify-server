@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es6", // Keep as es6 or esnext
+    "module": "ESNext", // Change from 'commonjs' to 'ESNext' or 'ES6'
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node", // Helps resolve ES modules correctly
+    "resolveJsonModule": true // If you are using JSON files
+  },
+  "include": ["*.ts"], // Include TypeScript files
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,7 @@
+{
+  "watch": ["*.ts"],
+  "ext": "ts",
+  "exec": "tsx ./index.ts",
+  "ignore": ["C:/DumpStack.log.tmp"],
+  "verbose": true
+}
