@@ -6,7 +6,7 @@ Gymify Server is the backend API for the Gymify platform, designed to facilitate
 ## Prerequisites
 Ensure you have the following installed:
 
-- Node.js (v16 or above)
+- Node.js (v18 or above)
 - npm or yarn
 - MongoDB Atlas account or local MongoDB instance
 - Google Developer Console account for YouTube API credentials

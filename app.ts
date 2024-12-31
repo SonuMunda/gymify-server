@@ -11,8 +11,9 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 
 const app = express();
-// Swagger definition
 
+
+// Swagger definition
 const swaggerDefinition = {
   openapi: "3.0.0",
   info: {

@@ -5,8 +5,9 @@ import app from "./app.js";
 import { Server } from "http";
 import chalk from "chalk";
 
-dotenv.config();
 
+dotenv.config();
+// Connection URL
 const CONNECTION_URL = process.env.CONNECTION_URL as string;
 const PORT = process.env.PORT || 3000;
 
