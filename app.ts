@@ -5,7 +5,7 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import morgan from "morgan";
 import bodyParser from "body-parser";
-import routes from "./routes/index.js";
+import routes from './routes/index'
 import error from "./middlewares/error.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -45,7 +45,7 @@ const swaggerDefinition = {
 // Options for swagger-jsdoc
 const options = {
   swaggerDefinition,
-  apis: ["./routes/*.js"],
+  apis: ["./routes/*.ts"],
 };
 
 // Initialize swagger-jsdoc
