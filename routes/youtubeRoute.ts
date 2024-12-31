@@ -3,7 +3,7 @@ import {
   uploadVideo,
   youtubeAuthUrl,
   youtubeCallback,
-} from "../controllers/youtubeController.js";
+} from "../controllers/youtubeController";
 const router = express.Router();
 
 router.get("/auth", youtubeAuthUrl);

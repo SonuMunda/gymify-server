@@ -1,8 +1,8 @@
-import APIError from "../utils/ApiError.js";
-import { UserModel, RefreshTokenModel } from "../models/index.js";
+import APIError from "../utils/ApiError";
+import { UserModel, RefreshTokenModel } from "../models/index";
 import httpStatus from "http-status";
-import { tokenTypes } from "../config/tokens.js";
-import { verify } from "../utils/jwtHelpers.js";
+import { tokenTypes } from "../config/tokens";
+import { verify } from "../utils/jwtHelpers";
 import { NextFunction, Request, Response } from "express";
 
 const isActiveUser = async (req: any, res: any, next: any) => {

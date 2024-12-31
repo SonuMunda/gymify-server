@@ -1,5 +1,5 @@
-import { getUserFromId, getUserFromUsername } from "../services/userService.js";
-import { IUser } from "../models/UserModel.js";
+import { getUserFromId, getUserFromUsername } from "../services/userService";
+import { IUser } from "../models/UserModel";
 
 const getUserInfo = async (req: any, res: any, next: any) => {
   const userId = req.authData.userId;

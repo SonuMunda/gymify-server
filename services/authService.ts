@@ -1,9 +1,9 @@
-import { UserModel } from "../models/index.js";
+import { UserModel } from "../models/index";
 import httpStatus from "http-status";
 
-import APIError from "../utils/ApiError.js";
+import APIError from "../utils/ApiError";
 import bcrypt from "bcryptjs";
-import { IUser } from "../models/UserModel.js";
+import { IUser } from "../models/UserModel";
 
 const createNewUser = async (user: IUser) => {
   const oldUser = await UserModel.findOne({ email: user.email.toLowerCase() });

@@ -6,16 +6,16 @@ import {
   verifyUserFromRefreshTokenPayload,
   createNewUser,
   fetchUserFromEmail,
-} from "../services/authService.js";
+} from "../services/authService";
 import {
   generateAuthTokens,
   clearRefreshToken,
   verifyRefreshToken,
   generateAccessTokenFromRefreshTokenPayload,
-} from "../services/tokenService.js";
+} from "../services/tokenService";
 import { OAuth2Client } from "google-auth-library";
-import { IUser } from "../models/UserModel.js";
-import ApiError from "../utils/ApiError.js";
+import { IUser } from "../models/UserModel";
+import ApiError from "../utils/ApiError";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -122,7 +122,6 @@ const googleUserRegister = async (req: any, res: any, next: any) => {
     next(error);
   }
 };
-
 
 const googleUserLogin = async (req: any, res: any, next: any) => {
   try {

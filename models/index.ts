@@ -1,5 +1,5 @@
-import UserModel from './UserModel.js';
-import RefreshTokenModel from './RefreshTokenModel.js';
+import UserModel from './UserModel';
+import RefreshTokenModel from './RefreshTokenModel';
 
 export {
   UserModel,RefreshTokenModel

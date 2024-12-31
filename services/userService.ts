@@ -1,7 +1,7 @@
 import * as httpStatus from "http-status";
-import { UserModel } from "../models/index.js";
+import { UserModel } from "../models/index";
 
-import ApiError from "../utils/ApiError.js";
+import ApiError from "../utils/ApiError";
 
 const getUserFromId = async (userId: string) => {
   const user = await UserModel.findById(userId);

@@ -1,9 +1,9 @@
 import express from "express";
-import { isActiveUser } from "../middlewares/isActiveUser.js";
-import validate from "../utils/yupValidations.js";
-import controller from "../controllers/userController.js";
+import { isActiveUser } from "../middlewares/isActiveUser";
+import validate from "../utils/yupValidations";
+import controller from "../controllers/userController";
 import trimRequest from "trim-request";
-import schemas from "../validations/userValidations.js";
+import schemas from "../validations/userValidations";
 
 const router = express.Router();
 

@@ -1,12 +1,12 @@
-import { sign, verify } from "../utils/jwtHelpers.js";
-import { tokenTypes } from "../config/tokens.js";
+import { sign, verify } from "../utils/jwtHelpers";
+import { tokenTypes } from "../config/tokens";
 
-import { RefreshTokenModel } from "../models/index.js";
+import { RefreshTokenModel } from "../models/index";
 import moment from "moment";
 import httpStatus from "http-status";
 
-import APIError from "../utils/ApiError.js";
-import { IUser } from "../models/UserModel.js";
+import APIError from "../utils/ApiError";
+import { IUser } from "../models/UserModel";
 
 interface TokenPayload {
   userId: string;
