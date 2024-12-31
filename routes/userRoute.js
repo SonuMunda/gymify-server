@@ -4,6 +4,7 @@ import validate from "../utils/yupValidations.js";
 import controller from "../controllers/userController.js";
 import trimRequest from "trim-request";
 import schemas from "../validations/userValidations.js";
+import oneVOneChallengeValidationSchemas from "../validations/oneVOneChallengeValidations.js";
 
 const router = express.Router();
 
@@ -134,5 +135,55 @@ router.put(
   validate(schemas.updateAvatarSchema),
   controller.updateAvatar
 );
+
+/**
+ * @swagger
+ * /v1/user/challenge-user:
+ *   post:
+ *     description: Challenge a user for a 1v1 challenge
+ *     tags:
+ *       - User
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               challengedBy:
+ *                 type: string
+ *               challengedTo:
+ *                 type: string
+ *               challengeName:
+ *                 type: string
+ *               challengeType:
+ *                 type: string
+ *               exerciseType:
+ *                 type: string
+ *             required:
+ *               - challengedBy
+ *               - challengedTo
+ *               - challengeName
+ *               - challengeType
+ *               - exerciseType
+ *     responses:
+ *       200:
+ *         description: User challenged successfully
+ *       400:
+ *         description: Invalid challenge data
+ *       401:
+ *         description: Unauthorized, user not logged in
+ */
+
+router.post(
+  "/challenge-user",
+  trimRequest.all,
+  isActiveUser,
+  validate(oneVOneChallengeValidationSchemas.createOneVOneChallengeSchema),
+  controller.challengeAUser
+);
+
 
 export default router;

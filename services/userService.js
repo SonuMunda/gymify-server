@@ -11,4 +11,7 @@ const getUserFromUsername = async (username) => {
   const user = await UserModel.findOne({ username }).select("username");
   return user;
 };
+
+
+
 export { getUserFromId, getUserFromUsername };
