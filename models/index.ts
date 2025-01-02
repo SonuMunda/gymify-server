@@ -1,6 +1,5 @@
-import UserModel from './UserModel';
-import RefreshTokenModel from './RefreshTokenModel';
+import UserModel from "./UserModel";
+import RefreshTokenModel from "./RefreshTokenModel";
+import OneVOneChallenge from "./OneVOneChallengeModel";
 
-export {
-  UserModel,RefreshTokenModel
-};
+export { UserModel, RefreshTokenModel, OneVOneChallenge };

@@ -11,6 +11,8 @@ export interface IUser {
   about?: string;
   password?: string;
   source?: string;
+  challengesSent: string[];
+  challengesReceived: string[];
   winningStreak?: number;
   totalScore?: number;
   role?: string;
