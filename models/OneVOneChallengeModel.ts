@@ -2,7 +2,6 @@ import mongoose, { Document, Schema } from "mongoose";
 
 interface IOneVOneChallenge extends Document {
   challengeName: string;
-  challengeType: string;
   exerciseType: string;
   challengedBy: mongoose.Schema.Types.ObjectId;
   challengedTo: mongoose.Schema.Types.ObjectId;

@@ -22,7 +22,6 @@ const challengeAUser = async (
     challengedBy,
     challengedTo,
     challengeName,
-
     exerciseType,
   } = req.body;
 

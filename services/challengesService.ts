@@ -7,11 +7,11 @@ interface ChallengeRequest {
   exerciseType: string;
 }
 
-interface UserModel {
-  _id: string;
-  challengesSent: string[];
-  challengesReceived: string[];
-}
+// interface UserModel {
+//   _id: string;
+//   // challengesSent: string[];
+//   // challengesReceived: string[];
+// }
 
 const challengeAUserService = async ({
   challengedBy,
@@ -36,12 +36,12 @@ const challengeAUserService = async ({
       throw new Error("One or both users not found.");
     }
 
-    challengedByUser.challengesSent = challengedByUser.challengesSent || [];
-    challengedToUser.challengesReceived =
-      challengedToUser.challengesReceived || [];
+    // challengedByUser.challengesSent = challengedByUser.challengesSent || [];
+    // challengedToUser.challengesReceived =
+    //   challengedToUser.challengesReceived || [];
 
-    challengedByUser.challengesSent.push(challenge._id);
-    challengedToUser.challengesReceived.push(challenge._id);
+    // challengedByUser.challengesSent.push(challenge._id);
+    // challengedToUser.challengesReceived.push(challenge._id);
 
     await Promise.all([
       challengedByUser.save(),

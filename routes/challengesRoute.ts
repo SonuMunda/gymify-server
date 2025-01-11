@@ -30,15 +30,12 @@ const router = express.Router();
  *                 type: string
  *               challengeName:
  *                 type: string
- *               challengeType:
- *                 type: string
  *               exerciseType:
  *                 type: string
  *             required:
  *               - challengedBy
  *               - challengedTo
  *               - challengeName
- *               - challengeType
  *               - exerciseType
  *     responses:
  *       200:
