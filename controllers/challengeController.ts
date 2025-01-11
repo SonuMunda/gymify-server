@@ -10,7 +10,6 @@ interface ChallengeRequestBody {
   challengedBy: string;
   challengedTo: string;
   challengeName: string;
-  challengeType: string;
   exerciseType: string;
 }
 
@@ -23,7 +22,7 @@ const challengeAUser = async (
     challengedBy,
     challengedTo,
     challengeName,
-    challengeType,
+
     exerciseType,
   } = req.body;
 
@@ -41,7 +40,6 @@ const challengeAUser = async (
       challengedBy,
       challengedTo,
       challengeName,
-      challengeType,
       exerciseType,
     });
 

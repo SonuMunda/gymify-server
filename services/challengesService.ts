@@ -4,7 +4,6 @@ interface ChallengeRequest {
   challengedBy: string;
   challengedTo: string;
   challengeName: string;
-  challengeType: string;
   exerciseType: string;
 }
 
@@ -18,13 +17,11 @@ const challengeAUserService = async ({
   challengedBy,
   challengedTo,
   challengeName,
-  challengeType,
   exerciseType,
 }: ChallengeRequest) => {
   try {
     const challenge = new OneVOneChallenge({
       challengeName,
-      challengeType,
       exerciseType,
       challengedBy,
       challengedTo,

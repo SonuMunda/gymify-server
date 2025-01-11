@@ -6,7 +6,6 @@ const challengesValidationSchema = {
       challengedBy: yup.string().required(),
       challengedTo: yup.string().required(),
       challengeName: yup.string().required(),
-      challengeType: yup.string().required(),
       exerciseType: yup.string().required(),
     }),
   }),

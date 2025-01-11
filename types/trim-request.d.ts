@@ -1,1 +1,1 @@
-declare module "trim-request";
+declare module 'trim-request'

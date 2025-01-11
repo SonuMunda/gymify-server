@@ -1,4 +1,5 @@
 import express from "express";
+// @ts-ignore
 import trimRequest from "trim-request";
 import controller from "../controllers/challengeController";
 import challengesValidationSchema from "../validations/challangesValidations";

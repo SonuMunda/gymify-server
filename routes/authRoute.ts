@@ -2,6 +2,7 @@ import express from "express";
 import { isActiveUser } from "../middlewares/isActiveUser";
 import validate from "../utils/yupValidations";
 import controller from "../controllers/authController";
+// @ts-ignore
 import trimRequest from "trim-request";
 import schemas from "../validations/authValidations";
 

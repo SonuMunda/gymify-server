@@ -4,6 +4,7 @@ import {
   youtubeAuthUrl,
   youtubeCallback,
 } from "../controllers/youtubeController";
+
 const router = express.Router();
 
 router.get("/auth", youtubeAuthUrl);

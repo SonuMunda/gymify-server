@@ -5,7 +5,6 @@ import app from "./app.js";
 import { Server } from "http";
 import chalk from "chalk";
 
-
 dotenv.config();
 // Connection URL
 const CONNECTION_URL = process.env.CONNECTION_URL as string;
@@ -23,7 +22,7 @@ mongoose.connection.on("error", (err) => {
 });
 
 if (process.env.NODE_ENV !== "production") {
-  mongoose.set("debug", true);
+  mongoose.set("debug", false);
 }
 
 let server: Server;

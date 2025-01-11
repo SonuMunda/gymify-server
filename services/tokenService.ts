@@ -17,11 +17,13 @@ interface TokenPayload {
 const generateToken = async (
   userId: string,
   loginTime: any,
+  role: string,
   exp: any,
   type: string
 ) => {
   const payload = {
     userId,
+    role,
     loginTime: new Date(loginTime.valueOf()),
     exp: exp.unix(),
     type,
@@ -60,6 +62,7 @@ const generateAuthTokens = async (user: any) => {
   const accessToken = await generateToken(
     user._id,
     loginTime,
+    user.role,
     accessTokenExpiresAt,
     tokenTypes.ACCESS as string
   );
@@ -71,6 +74,7 @@ const generateAuthTokens = async (user: any) => {
   const refreshToken = await generateToken(
     user._id,
     loginTime,
+    user.role,
     refreshTokenExpiresAt,
     tokenTypes.REFRESH as string
   );
@@ -87,8 +91,10 @@ const generateAccessTokenFromRefreshTokenPayload = async ({
   userId,
   loginTime,
   platform,
+  role
 }: {
   userId: string;
+  role: string;
   loginTime: any;
   platform: any;
 }) => {
@@ -101,6 +107,7 @@ const generateAccessTokenFromRefreshTokenPayload = async ({
   const accessToken = await generateToken(
     userId,
     moment(loginTime),
+    role,
     accessTokenExpiresAt,
     tokenTypes.ACCESS as string
   );

@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-
 interface IOneVOneChallenge extends Document {
   challengeName: string;
   challengeType: string;
@@ -24,10 +23,6 @@ const OneVOneChallengeSchema = new Schema<IOneVOneChallenge>(
       type: String,
       required: true,
     },
-    challengeType: {
-      type: String,
-      required: true,
-    },
     exerciseType: {
       type: String,
       required: true,
@@ -46,6 +41,7 @@ const OneVOneChallengeSchema = new Schema<IOneVOneChallenge>(
     challangeStatus: {
       type: String,
       default: "pending",
+      enum: ["pending", "completed", "cancelled"],
     },
     isCompleted: {
       type: Boolean,
@@ -54,6 +50,7 @@ const OneVOneChallengeSchema = new Schema<IOneVOneChallenge>(
     verificationStatus: {
       type: String,
       default: "pending",
+      enum: ["pending", "verified", "rejected"],
     },
     verifiedAt: {
       type: Date,
@@ -72,14 +69,9 @@ const OneVOneChallengeSchema = new Schema<IOneVOneChallenge>(
       type: Number,
       default: 0,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   { timestamps: true }
 );
-
 
 const OneVOneChallenge = mongoose.model<IOneVOneChallenge>(
   "OneVOneChallenge",

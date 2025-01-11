@@ -4,9 +4,8 @@ import { IUser } from "../models/UserModel";
 const getUserInfo = async (req: any, res: any, next: any) => {
   const userId = req.authData.userId;
   try {
-    console.log("userId", userId);
     const user = await getUserFromId(userId);
-    console.log("user", user);
+
     const responseUser = {
       id: user.id as string,
       email: user.email,
