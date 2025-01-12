@@ -1,13 +1,44 @@
 import express from "express";
 // @ts-ignore
 import trimRequest from "trim-request";
-import controller from "../controllers/challengeController";
+import {
+  acceptOneVOneChallenge,
+  getUserChallenges,
+  challengeAUserOneVOne,
+  rejectChallenge,
+} from "../controllers/challengeController";
 import challengesValidationSchema from "../validations/challangesValidations";
 import { isActiveUser } from "../middlewares/isActiveUser";
 import validate from "../utils/yupValidations";
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /v1/challenges/getuserchallenges:
+ *  get:
+ *   description: Get all challenges for a user
+ *  tags:
+ *   - Challanges
+ * security:
+ *  - BearerAuth: []
+ * responses:
+ * 200:
+ * description: Challenges fetched successfully
+ * 400:
+ * description: Invalid challenge data
+ * 401:
+ * description: Unauthorized, user not logged in
+ * 500:
+ * description: Internal server error
+ */
+
+router.get(
+  "/getuserchallenges",
+  trimRequest.all,
+  isActiveUser,
+  getUserChallenges
+);
 /**
  * @swagger
  * /v1/challenges/challenge-user:
@@ -49,8 +80,8 @@ router.post(
   "/challenge-user",
   trimRequest.all,
   isActiveUser,
-  validate(challengesValidationSchema.challengeAUser),
-  controller.challengeAUser
+  validate(challengesValidationSchema.challengeAUserOneVOne),
+  challengeAUserOneVOne
 );
 
 /**
@@ -86,8 +117,8 @@ router.post(
   "/accept-challenge",
   trimRequest.all,
   isActiveUser,
-  validate(challengesValidationSchema.acceptChallenge),
-  controller.acceptChallenge
+  validate(challengesValidationSchema.acceptOneVOneChallenge),
+  acceptOneVOneChallenge
 );
 
 /**
@@ -124,7 +155,7 @@ router.post(
   trimRequest.all,
   isActiveUser,
   validate(challengesValidationSchema.rejectChallenge),
-  controller.rejectChallenge
+  rejectChallenge
 );
 
 export default router;

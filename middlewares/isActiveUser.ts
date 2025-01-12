@@ -15,7 +15,6 @@ const isActiveUser = async (req: any, res: any, next: any) => {
         "No Authorization header provided"
       );
     }
-    console.log("authorizationHeader", authorizationHeader);
 
     const [bearer, accessToken] = authorizationHeader.split(" ");
 
@@ -49,7 +48,6 @@ const isActiveUser = async (req: any, res: any, next: any) => {
       throw new APIError(httpStatus.FORBIDDEN, "Invalid Access Token - logout");
 
     req.authData = tokenPayload;
-    console.log("tokenPayload", tokenPayload);
 
     next();
   } catch (error) {

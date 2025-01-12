@@ -1,91 +1,118 @@
-import { Request, Response, NextFunction } from "express";
 import {
-  challengeAUserService,
-  acceptChallengeService,
+  challengeAUserOneVOneService,
+  acceptOneVOneChallengeService,
   rejectChallengeService,
 } from "../services/challengesService";
-import { getUserFromId } from "../services/userService";
 
-interface ChallengeRequestBody {
-  challengedBy: string;
-  challengedTo: string;
-  challengeName: string;
-  exerciseType: string;
-}
+import { errorResponse, successResponse } from "../utils/ResponseHelpers";
+import { OneVOneChallenge } from "../models";
 
-const challengeAUser = async (
-  req: Request<{}, {}, ChallengeRequestBody>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const {
-    challengedBy,
-    challengedTo,
-    challengeName,
-    exerciseType,
-  } = req.body;
+const getUserChallenges = async (req: any, res: any): Promise<void> => {
+  const userId = req.authData.userId; // Get the user ID from the request
+
+  if (!userId) errorResponse(res, "Unauthorized", 401);
 
   try {
-    const [challengedByUserExists, challengedToUserExists] = await Promise.all([
-      getUserFromId(challengedBy),
-      getUserFromId(challengedTo),
-    ]);
+    const challenges = await OneVOneChallenge.find({
+      $or: [{ challengedBy: userId }, { challengedTo: userId }],
+    })
+      .populate("challengedBy", "fullName _id")
+      .populate("challengedTo", "fullName _id")
+      .lean();
 
-    if (!challengedByUserExists || !challengedToUserExists) {
-      res.status(400).json({ message: "One or both users not found." });
+    const sentChallenges = challenges.filter(
+      (challenge) => challenge.challengedBy._id.toString() === userId
+    );
+    const receivedChallenges = challenges.filter(
+      (challenge) => challenge.challengedTo._id.toString() === userId
+    );
+    if (!sentChallenges.length && !receivedChallenges.length) {
+      successResponse(res, "No challenges found", {
+        sentChallenges,
+        receivedChallenges,
+      });
     }
 
-    const challenge = await challengeAUserService({
-      challengedBy,
+    successResponse(res, "Challenges fetched successfully", {
+      sentChallenges,
+      receivedChallenges,
+    });
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
+  }
+};
+
+const challengeAUserOneVOne = async (req: any, res: any): Promise<void> => {
+  const { challengedTo, exerciseType } = req.body;
+  const userId = req?.authData?.userId;
+  if (!userId) {
+    errorResponse(res, "Unauthorized", 401);
+    return;
+  }
+  try {
+    const result = await challengeAUserOneVOneService({
+      res,
+      challengedBy: userId,
       challengedTo,
-      challengeName,
       exerciseType,
     });
-
-    res.status(200).json({ message: "Challenge sent", challenge });
-  } catch (error) {
-    next(error);
+    if (!result) {
+      errorResponse(res, "Failed to challenge a user", 500);
+      return;
+    }
+    successResponse(res, "User challenged successfully", result, 200);
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
   }
 };
 
-const acceptChallenge = async (
-  req: Request<{}, {}, { challengeId: string }>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+const acceptOneVOneChallenge = async (req: any, res: any): Promise<void> => {
   const { challengeId } = req.body;
 
   try {
-    const challenge = await acceptChallengeService(challengeId);
-
-    res.status(200).json({ message: "Challenge accepted", challenge });
-  } catch (error) {
-    next(error);
+    const challenge = await acceptOneVOneChallengeService(res, challengeId);
+    if (!challenge) {
+      errorResponse(
+        res,
+        "Failed to accept challenge,Please contact Naveen or Sonu",
+        400
+      );
+      return;
+    }
+    successResponse(res, "Challenge accepted", challenge, 200);
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
   }
 };
 
-const rejectChallenge = async (
-  req: Request<{}, {}, { challengeId: string }>,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const { challengeId } = req.body;
+const rejectChallenge = async (req: any, res: any): Promise<void> => {
+  const { challengeId, reasonForRejection } = req.body;
 
   try {
-    const challenge = await rejectChallengeService(challengeId);
+    const challenge = await rejectChallengeService(
+      res,
+      challengeId,
+      reasonForRejection
+    );
 
     if (!challenge) {
-      res.status(400).json({ message: "Challenge not found." });
+      errorResponse(
+        res,
+        "Failed to reject challenge,Please contact Naveen or Sonu",
+        400
+      );
+      return;
     }
 
-    challenge.challangeStatus = "declined";
-
-    await challenge.save();
-
-    res.status(200).json({ message: "Challenge declined", challenge });
-  } catch (error) {
-    next(error);
+    successResponse(res, "Challenge rejected", challenge, 200);
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
   }
 };
 
-export default { challengeAUser, acceptChallenge, rejectChallenge };
+export {
+  getUserChallenges,
+  challengeAUserOneVOne,
+  acceptOneVOneChallenge,
+  rejectChallenge,
+};

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema<IUser>(
     avatar: { type: String },
     fullName: { type: String },
     username: { type: String },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     gender: { type: String },
     verified: { type: Boolean, default: false },
     about: { type: String },
@@ -34,6 +34,6 @@ const userSchema = new mongoose.Schema<IUser>(
   { collection: "users", timestamps: true }
 );
 
-const UserModel = mongoose.model<IUser>("UserSchema", userSchema);
+const UserModel = mongoose.model<IUser>("User", userSchema);
 
 export default UserModel;

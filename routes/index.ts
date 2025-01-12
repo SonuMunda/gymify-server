@@ -62,7 +62,7 @@ router.post(
       const uploadResult = await uploadVideoToCloudinary(req.file);
       console.log("uploadResult", uploadResult);
       const video = await VideoModel.create({
-        userId,
+        uploadedBy: userId,
         cloudinaryUrl: uploadResult.secure_url,
         publicId: uploadResult.public_id,
       });

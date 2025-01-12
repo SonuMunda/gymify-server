@@ -2,24 +2,60 @@ import mongoose from "mongoose";
 
 const videoSchema = new mongoose.Schema(
   {
-    userId: {
+    uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    youtubeUrl: {
+    challengeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "OneVOneChallenge",
+    },
+    title: {
       type: String,
     },
-    videoName: {
+    description: {
       type: String,
+    },
+    category: {
+      type: String,
+      enum: ["challenge submission", "stats", "other"],
     },
     cloudinaryUrl: {
       type: String,
     },
-    challengeId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Challenge",
+    youtubeUrl: {
+      type: String,
     },
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    views: {
+      type: Number,
+      default: 0,
+    },
+    videoThumbnail: { type: String },
+    size: {
+      type: Number,
+    },
+    format: {
+      type: String,
+      enum: ["mp4", "mov", "avi", "wmv"],
+    },
+    duration: {
+      type: Number,
+    },
+
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+    rejectionReason: {
+      type: String,
+    },
+
     publicId: {
       type: String,
       required: true,
@@ -30,6 +66,6 @@ const videoSchema = new mongoose.Schema(
   }
 );
 
-const VideoModel = mongoose.model("VideoSchema", videoSchema);
+const VideoModel = mongoose.model("Video", videoSchema);
 
 export default VideoModel;

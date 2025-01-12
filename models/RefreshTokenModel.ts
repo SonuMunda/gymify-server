@@ -9,7 +9,7 @@ export interface IRefreshToken {
 const refreshTokenSchema: Schema = new mongoose.Schema({
   userRef: {
     type: String,
-    ref: "users",
+    ref: "User",
     required: true,
     index: true,
   },

@@ -1,16 +1,17 @@
 import yup from "yup";
 
 const challengesValidationSchema = {
-  challengeAUser: yup.object({
+  challengeAUserOneVOne: yup.object({
     body: yup.object({
-      challengedBy: yup.string().required(),
       challengedTo: yup.string().required(),
-      challengeName: yup.string().required(),
-      exerciseType: yup.string().required(),
+      exerciseType: yup
+        .string()
+        .required()
+        .oneOf(["bench press", "squat", "deadlift"]),
     }),
   }),
 
-  acceptChallenge: yup.object({
+  acceptOneVOneChallenge: yup.object({
     body: yup.object({
       challengeId: yup.string().required(),
     }),
@@ -18,6 +19,7 @@ const challengesValidationSchema = {
 
   rejectChallenge: yup.object({
     body: yup.object({
+      reasonForRejection: yup.string().required(),
       challengeId: yup.string().required(),
     }),
   }),

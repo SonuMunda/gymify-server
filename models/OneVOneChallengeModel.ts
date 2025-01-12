@@ -1,35 +1,31 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface IOneVOneChallenge extends Document {
-  challengeName: string;
-  exerciseType: string;
-  challengedBy: mongoose.Schema.Types.ObjectId;
-  challengedTo: mongoose.Schema.Types.ObjectId;
-  challangeStatus: string;
-  isCompleted: boolean;
-  verificationStatus: string;
-  verifiedAt?: Date;
-  completedAt?: Date;
-  proofVideoUrl?: string;
-  winnerId?: mongoose.Schema.Types.ObjectId;
-  rewardPoints: number;
-  createdAt: Date;
-}
+// export interface IOneVOneChallenge extends Document {
+//   challengeName: string;
+//   exerciseType: string;
+//   challengedBy: string;
+//   challengedTo: string;
+//   status: string;
+//   isCompleted: boolean;
+//   verificationStatus: string;
+//   verifiedAt?: Date;
+//   completedAt?: Date;
+//   proofVideoUrl?: string;
+//   winnerId?: mongoose.Schema.Types.ObjectId;
+//   rewardPoints: number;
+//   createdAt: Date;
+//   reasonForRejection?: string;
+// }
 
-const OneVOneChallengeSchema = new Schema<IOneVOneChallenge>(
+const OneVOneChallengeSchema = new Schema(
   {
-    challengeName: {
-      type: String,
-      required: true,
-    },
-    exerciseType: {
-      type: String,
-      required: true,
-      enum: ["bench press", "squat", "deadlift"],
-    },
     challengedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    challengeName: {
+      type: String,
       required: true,
     },
     challengedTo: {
@@ -37,15 +33,23 @@ const OneVOneChallengeSchema = new Schema<IOneVOneChallenge>(
       ref: "User",
       required: true,
     },
-    challangeStatus: {
+    exerciseType: {
+      type: String,
+      required: true,
+      enum: ["bench press", "squat", "deadlift"],
+    },
+    // if challengedTo user accepts the challenge, status will be "accepted"
+    status: {
       type: String,
       default: "pending",
-      enum: ["pending", "completed", "cancelled"],
+      enum: ["pending", "accepted", "rejected"],
     },
+    // if the submitted video is veriffeid challenge is completed, isCompleted will be true
     isCompleted: {
       type: Boolean,
       default: false,
     },
+    // for admin to verify the challenge
     verificationStatus: {
       type: String,
       default: "pending",
@@ -68,11 +72,14 @@ const OneVOneChallengeSchema = new Schema<IOneVOneChallenge>(
       type: Number,
       default: 0,
     },
+    reasonForRejection: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
 
-const OneVOneChallenge = mongoose.model<IOneVOneChallenge>(
+const OneVOneChallenge = mongoose.model(
   "OneVOneChallenge",
   OneVOneChallengeSchema
 );
