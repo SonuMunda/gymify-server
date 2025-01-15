@@ -1,3 +1,4 @@
+import ora from "ora";
 import cloudinary from "../utils/cloudinary";
 import multer from "multer";
 import { errorResponse } from "../utils/ResponseHelpers";
@@ -49,6 +50,8 @@ const compressVideo = async (
   inputPath: string,
   outputPath: string
 ): Promise<void> => {
+  const compressionSpinner = ora("Compressing video...").start();
+
   return new Promise((resolve, reject) => {
     ffmpeg(inputPath)
       .videoCodec("libx264")
@@ -63,18 +66,16 @@ const compressVideo = async (
         console.log("Started ffmpeg with command:", commandLine);
       })
       .on("progress", (progress) => {
-        console.log(
-          "Processing: ",
-          progress.percent ? Math.round(progress.percent) : 0,
-          "% done"
-        );
+        compressionSpinner.text = `Compressing video: ${
+          progress.percent ? Math.round(progress.percent) : 0
+        }% done`;
       })
       .on("end", () => {
-        console.log("Compression finished");
+        compressionSpinner.succeed("Video compression complete");
         resolve();
       })
       .on("error", (err) => {
-        console.error("FFmpeg error:", err);
+        compressionSpinner.fail("Video compression failed");
         errorResponse(res, "Failed to compress video", 500, err);
         return;
       })
@@ -100,28 +101,23 @@ const uploadVideoToCloudinary = async (
   file: Express.Multer.File,
   res: any
 ): Promise<CloudinaryResponse | void> => {
-  console.log("File size original", file.size / (1024 * 1024), "MB");
+  const uploadSpinner = ora("Uploading video to Cloudinary...").start();
+
   const tempInputPath = path.join(os.tmpdir(), `input-${Date.now()}.mp4`);
   const tempOutputPath = path.join(os.tmpdir(), `output-${Date.now()}.mp4`);
 
   try {
-    console.log("File size original", file.size / (1024 * 1024), "MB");
-    console.log("Starting video upload process");
+    if (!file) {
+      errorResponse(res, "Video file is required", 400);
+      return;
+    }
 
     await writeFile(tempInputPath, file.buffer);
-    console.log("Temporary input file created");
 
-    console.log("Compressing video...");
     await compressVideo(res, tempInputPath, tempOutputPath);
 
     const compressedBuffer = await fs.promises.readFile(tempOutputPath);
-    console.log(
-      "Compression complete. Compressed size:",
-      compressedBuffer.length / (1024 * 1024),
-      "MB"
-    );
 
-    console.log("Uploading video to Cloudinary...");
     const cleanFilename = generateCleanFilename(file.originalname);
 
     const result = await new Promise<CloudinaryResponse>((resolve, reject) => {
@@ -152,7 +148,8 @@ const uploadVideoToCloudinary = async (
 
     return result;
   } catch (error: any) {
-    console.error("Upload error:", error);
+    uploadSpinner.fail(`Error during video upload: ${error.message}`);
+
     if (!res.headersSent) {
       errorResponse(
         res,
@@ -163,7 +160,6 @@ const uploadVideoToCloudinary = async (
     }
     throw error;
   } finally {
-    console.log("Cleaning up temporary files...");
     try {
       await unlink(tempInputPath).catch(() => {});
       await unlink(tempOutputPath).catch(() => {});
@@ -177,6 +173,7 @@ const uploadVideoToCloudinary = async (
       );
       return;
     }
+    uploadSpinner.succeed("Video uploaded successfully");
   }
 };
 

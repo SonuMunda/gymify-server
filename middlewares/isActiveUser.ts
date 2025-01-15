@@ -10,7 +10,6 @@ const isActiveUser = async (req: any, res: any, next: any) => {
   try {
     const authorizationHeader = req.get("Authorization");
 
-    console.log(" Authorization header ", authorizationHeader);
     if (!authorizationHeader) {
       errorResponse(res, "No Authorization header provided", 401);
       return;
@@ -51,6 +50,7 @@ const isActiveUser = async (req: any, res: any, next: any) => {
     }
 
     req.authData = tokenPayload;
+    console.log("req.authData", req.authData);
 
     next();
   } catch (error: any) {

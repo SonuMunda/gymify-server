@@ -24,6 +24,7 @@ const challengeAUserOneVOneService = async ({
     })
       .select("fullName")
       .lean();
+
     if (!users) {
       const message = "Users not found";
       errorResponse(res, message, 404);
@@ -80,7 +81,7 @@ const challengeAUserOneVOneService = async ({
       return;
     }
 
-    return newChallenge && newNotification ? true : false;
+    return newChallenge && newNotification ? newChallenge.id : false;
   } catch (error: any) {
     errorResponse(res, error.message, 500, error);
     return;
@@ -98,17 +99,21 @@ const acceptOneVOneChallengeService = async (
       select: "fullName",
     })) as any;
 
-    if (!challenge || !challenge.challengedTo || !challenge.challengedBy) {
+    if (
+      !challenge ||
+      !challenge.challengedTo._id ||
+      !challenge.challengedBy._id
+    ) {
       errorResponse(res, "Challenge not found or missing required data.", 404);
       return;
     }
-    if (challenge.challengedTo.toString() !== req.authData.userId) {
+    if (challenge.challengedTo._id.toString() !== req.authData.userId) {
       errorResponse(res, "You are not the challenged user", 401);
       return;
     }
 
     challenge.status = "accepted";
-    challenge.reasonForRejection = "";
+    challenge.reasonForRejectionFromChallengedUser = "";
     await challenge.save();
 
     const notificationMessage = `Your challenge of ${
@@ -118,7 +123,7 @@ const acceptOneVOneChallengeService = async (
     const newNotification = await sendNotification({
       res,
       sender: challenge.challengedBy,
-      recipient: challenge.challengedTo.id,
+      recipient: challenge.challengedTo._id,
       type: "1v1",
       challengeId: challengeId,
       message: notificationMessage,
@@ -153,7 +158,7 @@ const rejectChallengeService = async (
     }
 
     challenge.status = "rejected";
-    challenge.reasonForRejection = reasonForRejection || "";
+    challenge.reasonForRejectionFromChallengedUser = reasonForRejection || "";
     await challenge.save();
 
     const notificationMessage = `Your challenge of ${
@@ -200,10 +205,14 @@ const submitChallengeVideoService = async (
       errorResponse(res, "Challenge not found", 404);
       return;
     }
-    if (challenge.challengedBy.toString() !== userId) {
-      errorResponse(res, "You are not the challenger", 401);
+    if (
+      challenge?.challengedBy?._id?.toString() !== userId &&
+      challenge?.challengedTo?._id?.toString() !== userId
+    ) {
+      errorResponse(res, "You are not authorized for this challenge", 401);
       return;
     }
+
     if (challenge.status !== "accepted") {
       errorResponse(res, "Challenge is not accepted yet", 400);
       return;
@@ -240,6 +249,8 @@ const submitChallengeVideoService = async (
     }
 
     challenge.proofVideoUrl = uploadResult.secure_url;
+    challenge.isCompleted = true;
+    challenge.completedAt = new Date();
 
     await challenge.save();
 

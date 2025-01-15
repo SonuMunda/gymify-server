@@ -74,7 +74,7 @@ const challengeAUserOneVOne = async (req: any, res: any): Promise<void> => {
       return;
     }
 
-    successResponse(res, "User challenged successfully", result, 200);
+    successResponse(res, "User challenged successfully", { id: result }, 200);
     return;
   } catch (error: any) {
     console.log("Error occurred:", error.message);
@@ -87,7 +87,11 @@ const acceptOneVOneChallenge = async (req: any, res: any): Promise<void> => {
   const { challengeId } = req.body;
 
   try {
-    const challenge = await acceptOneVOneChallengeService(res,req, challengeId);
+    const challenge = await acceptOneVOneChallengeService(
+      res,
+      req,
+      challengeId
+    );
     if (!challenge) {
       errorResponse(
         res,
@@ -132,12 +136,13 @@ const rejectChallenge = async (req: any, res: any): Promise<void> => {
 };
 
 const submitChallengeVideo = async (req: any, res: any): Promise<void> => {
-  const { challengeId, title, description } = req.body;
+  const { challengeId, title, description, video, file } = req.body;
   const userId = req?.authData?.userId;
   if (!userId) {
     errorResponse(res, "Unauthorized", 401);
     return;
   }
+
   if (!req.file) {
     errorResponse(res, "No file uploaded", 400);
     return;

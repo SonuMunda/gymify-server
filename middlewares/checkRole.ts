@@ -3,6 +3,7 @@ import { errorResponse } from "../utils/ResponseHelpers";
 export const checkRole = (role: string) => {
   return (req: any, res: any, next: any) => {
     try {
+      console.log("req.authData", req.authData);
       if (!req.authData || !req.authData.role) {
         errorResponse(res, "Access Denied, User role not found", 401);
         return;

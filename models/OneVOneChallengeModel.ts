@@ -72,7 +72,10 @@ const OneVOneChallengeSchema = new Schema(
       type: Number,
       default: 0,
     },
-    reasonForRejection: {
+    reasonForRejectionFromChallengedUser: {
+      type: String,
+    },
+    reasonForRejectionFromAdmin: {
       type: String,
     },
   },

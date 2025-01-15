@@ -19,7 +19,8 @@ const challengesValidationSchema = {
 
   rejectChallenge: yup.object({
     body: yup.object({
-      reasonForRejection: yup.string().required(),
+      reasonForRejectionFromChallengedUser: yup.string().required(),
+      reasonForRejectionFromAdmin: yup.string().required(),
       challengeId: yup.string().required(),
     }),
   }),

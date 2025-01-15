@@ -20,7 +20,6 @@ import { errorResponse, successResponse } from "../utils/ResponseHelpers";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// Register new user
 const register = async (req: any, res: any, next: any) => {
   const { email, password, fullName, username } = req.body;
   try {
@@ -29,6 +28,13 @@ const register = async (req: any, res: any, next: any) => {
       return;
     }
     const hashedPassword = await bcryptjs.hash(password, 10);
+    const checkUserNameExists = await UserModel.findOne({ username }).select(
+      "username"
+    );
+    if (checkUserNameExists) {
+      errorResponse(res, "Username already exists", 400);
+      return;
+    }
     const newUser = await createNewUser(res, {
       email: email,
       password: hashedPassword,
