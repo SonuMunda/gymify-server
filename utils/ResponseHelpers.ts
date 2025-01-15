@@ -21,20 +21,23 @@ export function successResponse(
   };
 
   return response.status(code).json(result);
-} 
+}
 
 export function errorResponse(
   response: any,
   message: string,
   code: number = 400,
   error?: Error
-): ApiResponse {
-  const result: ApiResponse = {
-    status: "error",
-    message,
-    code,
-    stackTrace: error ? error.stack : undefined,
-  };
+): ApiResponse | undefined {
+  if (!response.headersSent) {
+    const result: ApiResponse = {
+      status: "error",
+      message,
+      code,
+      stackTrace: error ? error.stack : undefined,
+    };
 
-  return response.status(code).json(result);
+    return response.status(code).json(result);
+  }
+  return;
 }

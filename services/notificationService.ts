@@ -48,5 +48,6 @@ export const sendNotification = async ({
   } catch (error: Error | any) {
     console.error("Error sending notification:", error);
     errorResponse(res, "Failed to send notification", 500, error);
+    return;
   }
 };

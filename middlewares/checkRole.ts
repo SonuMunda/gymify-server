@@ -1,26 +1,27 @@
-import httpStatus from "http-status";
-import APIError from "../utils/ApiError";
+import { errorResponse } from "../utils/ResponseHelpers";
 
 export const checkRole = (role: string) => {
   return (req: any, res: any, next: any) => {
     try {
       if (!req.authData || !req.authData.role) {
-        throw new APIError(
-          httpStatus.FORBIDDEN,
-          "Access denied: User role not found"
-        );
+        errorResponse(res, "Access Denied, User role not found", 401);
+        return;
       }
 
       if (req.authData.role !== role) {
-        throw new APIError(
-          httpStatus.FORBIDDEN,
-          `Access denied: ${role} rights required`
+        errorResponse(
+          res,
+
+          `Access denied: ${role} rights required`,
+          401
         );
+        return;
       }
 
       next();
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      errorResponse(res, "Access Denied", 401, error);
+      return;
     }
   };
 };

@@ -1,7 +1,9 @@
 import { google } from "googleapis";
 import fs from "fs";
+import { errorResponse } from "../utils/ResponseHelpers";
 
 const uploadVideoToYouTube = async (
+  res: any,
   videoPath: string,
   title: string,
   description: string
@@ -19,11 +21,9 @@ const uploadVideoToYouTube = async (
 
     console.log("Uploading video to YouTube...");
 
-    // Get the file size to calculate progress
     const fileSize = fs.statSync(videoPath).size;
     let uploadedBytes = 0;
 
-    // Upload the video and track progress
     const response = await youtube.videos.insert({
       part: ["snippet", "status"],
       requestBody: {
@@ -39,6 +39,7 @@ const uploadVideoToYouTube = async (
         body: fs.createReadStream(videoPath).on("data", (chunk) => {
           uploadedBytes += chunk.length;
           const progress = (uploadedBytes / fileSize) * 100;
+          // @ts-ignore
           process.stdout.clearLine(null);
           process.stdout.cursorTo(0);
           process.stdout.write(`Uploading... ${Math.round(progress)}%`);
@@ -46,13 +47,13 @@ const uploadVideoToYouTube = async (
       },
     });
 
-    // Print new line after upload completes
     process.stdout.write("\n");
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error uploading video to YouTube:", error);
-    throw error;
+    errorResponse(res, "Error uploading video to YouTube", 500, error);
+    return;
   }
 };
 

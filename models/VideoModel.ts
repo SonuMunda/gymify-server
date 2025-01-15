@@ -38,6 +38,7 @@ const videoSchema = new mongoose.Schema(
     videoThumbnail: { type: String },
     size: {
       type: Number,
+      
     },
     format: {
       type: String,

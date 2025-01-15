@@ -14,36 +14,50 @@ import {
   generateAccessTokenFromRefreshTokenPayload,
 } from "../services/tokenService";
 import { OAuth2Client } from "google-auth-library";
-import { IUser } from "../models/UserModel";
+import UserModel, { IUser } from "../models/UserModel";
 import ApiError from "../utils/ApiError";
+import { errorResponse, successResponse } from "../utils/ResponseHelpers";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Register new user
 const register = async (req: any, res: any, next: any) => {
-  const { email, password } = req.body;
+  const { email, password, fullName, username } = req.body;
   try {
+    if (!email || !password || !fullName || !username) {
+      errorResponse(res, "All fields are required", 400);
+      return;
+    }
     const hashedPassword = await bcryptjs.hash(password, 10);
-    const newUser = await createNewUser({
+    const newUser = await createNewUser(res, {
       email: email,
       password: hashedPassword,
       source: "email",
+      fullName: fullName,
+      username: username,
     });
     const tokens = await generateAuthTokens(newUser);
-    res.json({ user: newUser, tokens });
-  } catch (error) {
-    next(error);
+    successResponse(res, "User registered successfully", {
+      user: newUser,
+      tokens,
+    });
+    return;
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
+    return;
   }
 };
 
 // User login
 const login = async (req: any, res: any, next: any) => {
   try {
-    const user = await fetchUserFromEmailAndPassword(req.body);
+    const user = await fetchUserFromEmailAndPassword(res, req.body);
     const tokens = await generateAuthTokens(user);
-    res.json({ user, tokens });
-  } catch (error) {
-    next(error);
+    successResponse(res, "User logged in successfully", { user, tokens });
+    return;
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
+    return;
   }
 };
 
@@ -51,9 +65,11 @@ const login = async (req: any, res: any, next: any) => {
 const logout = async (req: any, res: any, next: any) => {
   try {
     await clearRefreshToken(req.body.refreshToken);
-    res.json({});
-  } catch (error) {
-    next(error);
+    successResponse(res, "User logged out successfully");
+    return;
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
+    return;
   }
 };
 
@@ -64,32 +80,35 @@ const refreshToken = async (req: any, res: any, next: any) => {
 
     const refreshTokenPayload = await verifyRefreshToken(refreshToken);
     if (!refreshTokenPayload) {
-      throw new Error("Invalid Refresh Token - logout");
+      errorResponse(res, "Invalid refresh token", 401);
+      return;
     }
-    await verifyUserFromRefreshTokenPayload(refreshTokenPayload);
+    await verifyUserFromRefreshTokenPayload(res, refreshTokenPayload);
     let newAccessToken = await generateAccessTokenFromRefreshTokenPayload(
       refreshTokenPayload
     );
 
-    res.json({
+    successResponse(res, "Token refreshed successfully", {
       accessToken: newAccessToken,
     });
-  } catch (error) {
-    next(error);
+    return;
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
+    return;
   }
 };
 
 // Reset password
 const resetPassword = async (req: any, res: any, next: any) => {
   try {
-    await verifyCurrentPassword(req.authData.userId, req.body.password);
-    await updatePassword(req.authData.userId, req.body.newPassword);
+    await verifyCurrentPassword(res, req.authData.userId, req.body.password);
+    await updatePassword(res, req.authData.userId, req.body.newPassword);
 
-    res.json({
-      message: "Password updated successfully",
-    });
-  } catch (error) {
-    next(error);
+    successResponse(res, "Password updated successfully", {}, 200);
+    return;
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
+    return;
   }
 };
 
@@ -103,13 +122,15 @@ const googleUserRegister = async (req: any, res: any, next: any) => {
     });
     const payload = ticket.getPayload();
     if (!payload) {
-      throw new Error("Invalid token payload");
+      errorResponse(res, "Invalid token payload", 400);
+      return;
     }
     const { name, email, picture } = payload;
     if (!email) {
-      throw new ApiError(400, "Email is required");
+      errorResponse(res, "Email is required", 400);
+      return;
     }
-    const newUser = await createNewUser({
+    const newUser = await createNewUser(res, {
       email,
       fullName: name,
       avatar: picture,
@@ -117,9 +138,14 @@ const googleUserRegister = async (req: any, res: any, next: any) => {
       source: "google",
     });
     const tokens = await generateAuthTokens(newUser);
-    res.json({ user: newUser, tokens });
-  } catch (error) {
-    next(error);
+    successResponse(res, "User registered successfully", {
+      user: newUser,
+      tokens,
+    });
+    return;
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
+    return;
   }
 };
 
@@ -132,17 +158,22 @@ const googleUserLogin = async (req: any, res: any, next: any) => {
     });
     const payload = ticket.getPayload();
     if (!payload) {
-      throw new Error("Invalid token payload");
+      errorResponse(res, "Invalid token payload", 400);
+      return;
     }
     const { email } = payload;
     if (!email) {
-      throw new Error("Email is required");
+      errorResponse(res, "Email is required", 400);
+      return;
     }
-    const user = await fetchUserFromEmail({ email });
+    const user = await fetchUserFromEmail(res, { email });
     const tokens = await generateAuthTokens(user);
-    res.json({ user, tokens });
-  } catch (error) {
-    next(error);
+
+    successResponse(res, "User logged in successfully", { user, tokens });
+    return;
+  } catch (error: any) {
+    errorResponse(res, error.message, 500, error);
+    return;
   }
 };
 
