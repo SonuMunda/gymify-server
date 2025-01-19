@@ -3,11 +3,8 @@ import express from "express";
 import authRoute from "./authRoute";
 import userRoute from "./userRoute";
 import challengesRoute from "./challengesRoute";
-<<<<<<< HEAD
 import adminRoute from "./adminRoute";
-=======
 import userStatisticsRoute from "./userStatisticsRoute"
->>>>>>> sonu/dev
 
 const router = express.Router();
 
