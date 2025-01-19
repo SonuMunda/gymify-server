@@ -19,10 +19,7 @@ router.get("/status", (req, res) => {
 router.use("/auth", authRoute);
 router.use("/user", userRoute);
 router.use("/challenges", challengesRoute);
-<<<<<<< HEAD
 router.use("/admin", adminRoute);
-=======
 router.use("/statistics",userStatisticsRoute )
->>>>>>> sonu/dev
 
 export default router;
